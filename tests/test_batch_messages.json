@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_1.txt"
+  },
+  {
+    "Id": "2",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_2.txt"
+  },
+  {
+    "Id": "3",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_3.txt"
+  },
+  {
+    "Id": "4",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_4.txt"
+  },
+  {
+    "Id": "5",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_5.txt"
+  },
+  {
+    "Id": "6",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_6.txt"
+  },
+  {
+    "Id": "7",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_7.txt"
+  },
+  {
+    "Id": "8",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_8.txt"
+  },
+  {
+    "Id": "9",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_9.txt"
+  },
+  {
+    "Id": "10",
+        "MessageBody": "https://s3.amazonaws.com/code-index/prep-output/USTIF/sqs_batch_10.txt"
+  }
+]
