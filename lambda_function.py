@@ -47,6 +47,7 @@ def lambda_handler(event, context):
 			e = Event("", "")
 			for file in s3_urls_to_process:
 				e.purge_event("code-index", file)
+			log.critical("processed", input_file_count=len(s3_urls_to_process), processed_file_count=len(file_texts))
 			result = {"msg" : "Success", "input_file_count" : len(s3_urls_to_process), "processed_file_count" : len(file_texts)}
 			log.critical("finished", result=result)
 		else:
