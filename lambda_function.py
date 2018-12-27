@@ -88,11 +88,10 @@ def setup_logging(lambda_name, lambda_event, aws_request_id):
 		wrapper_class=structlog.stdlib.BoundLogger,
 		cache_logger_on_first_use=True,
 	)
-
+	log = structlog.get_logger()
 	log = log.bind(aws_request_id=aws_request_id)
-	
 	log.critical("started", input_events=json.dumps(lambda_event, indent=3))
 
-	return structlog.get_logger()
+	return log
 
 	
