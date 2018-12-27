@@ -90,6 +90,7 @@ def setup_logging(lambda_name, lambda_event, aws_request_id):
 	)
 	log = structlog.get_logger()
 	log = log.bind(aws_request_id=aws_request_id)
+	log = log.bind(lambda_name=lambda_name)
 	log.critical("started", input_events=json.dumps(lambda_event, indent=3))
 
 	return log
