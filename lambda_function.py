@@ -89,11 +89,7 @@ def setup_logging(lambda_name, lambda_event, aws_request_id):
 		cache_logger_on_first_use=True,
 	)
 
-	log = log.bind(lambda_name=lambda_name)
-	aws_request_id = ""
-	if lambda_context is not None:
-		aws_request_id = lambda_context.aws_request_id
-		log = log.bind(aws_request_id=aws_request_id)
+	log = log.bind(aws_request_id=aws_request_id)
 	
 	log.critical("started", input_events=json.dumps(lambda_event, indent=3))
 
