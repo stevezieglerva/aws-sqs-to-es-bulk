@@ -36,11 +36,11 @@ def lambda_handler(event, context):
 			for file in file_texts:
 				combined_text = combined_text + "\n____\n" + file + "\n" + file_texts[file] 
 			print("combined_text length: " + str(len(combined_text)))
-			combined_file_name = "combined-files/" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M") + "-" + aws_request_id + ".txt"
+			base_filename = "combined-files/" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M") + "-" + aws_request_id
+			combined_file_name = base_filename + ".txt"
 			print("combined file name:" + combined_file_name)
 			create_s3_text_file("code-index", combined_file_name, combined_text, s3)
-
-
+			create_csv_file(base_filename, file_texts, s3)
 
 			e = Event("", "")
 			for file in dynamodb_urls_to_process:
@@ -93,6 +93,12 @@ def setup_logging(lambda_name, lambda_event, aws_request_id):
 	log.critical("started", input_events=json.dumps(lambda_event, indent=3))
 
 	return log
+
+
+def create_csv_file(base_filename, file_texts, s3):
+	csv = create_csv_file_contents(file_texts)
+	create_s3_text_file("code-index", base_filename + ".csv", csv, s3)
+
 
 def create_csv_file_contents(file_texts):
 	csv = "filename,file_text"
