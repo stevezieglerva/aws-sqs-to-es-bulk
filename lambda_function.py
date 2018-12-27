@@ -11,18 +11,16 @@ from Event import *
 
 def lambda_handler(event, context):
 	try:
+		aws_request_id = ""
+		if context is not None:
+			aws_request_id = context.aws_request_id
+
 		print("Started")
 		if "text_logging" in os.environ:
 			log = structlog.get_logger()
 		else:
-			log = setup_logging()
-		log = log.bind(lambda_name="aws-code-index-stream-bulk-load")
-		aws_request_id = ""
-		if context is not None:
-			aws_request_id = context.aws_request_id
-			log = log.bind(aws_request_id=aws_request_id)
-		
-		log.critical("started", input_events=json.dumps(event, indent=3))
+			log = setup_logging("aws-code-index-stream-bulk-load", event, aws_request_id)
+
 
 
 		#print(json.dumps(event, indent=3))
@@ -43,6 +41,9 @@ def lambda_handler(event, context):
 			combined_file_name = "combined-files/" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M") + "-" + aws_request_id + ".txt"
 			print("combined file name:" + combined_file_name)
 			create_s3_text_file("code-index", combined_file_name, combined_text, s3)
+
+
+
 
 			e = Event("", "")
 			for file in s3_urls_to_process:
@@ -66,29 +67,38 @@ def lambda_handler(event, context):
 
 
 
-def setup_logging():
-    logging.basicConfig(
-        format="%(message)s",
-        stream=sys.stdout,
-        level=logging.INFO
-    )
-    structlog.configure(
-        processors=[
-            structlog.stdlib.filter_by_level,
-            structlog.stdlib.add_logger_name,
-            structlog.stdlib.add_log_level,
-            structlog.stdlib.PositionalArgumentsFormatter(),
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.processors.StackInfoRenderer(),
-            structlog.processors.format_exc_info,
-            structlog.processors.UnicodeDecoder(),
-            structlog.processors.JSONRenderer()
-        ],
-        context_class=dict,
-        logger_factory=structlog.stdlib.LoggerFactory(),
-        wrapper_class=structlog.stdlib.BoundLogger,
-        cache_logger_on_first_use=True,
-    )
-    return structlog.get_logger()
+def setup_logging(lambda_name, lambda_event, aws_request_id):
+	logging.basicConfig(
+		format="%(message)s",
+		stream=sys.stdout,
+		level=logging.INFO
+	)
+	structlog.configure(
+		processors=[
+			structlog.stdlib.filter_by_level,
+			structlog.stdlib.add_logger_name,
+			structlog.stdlib.add_log_level,
+			structlog.stdlib.PositionalArgumentsFormatter(),
+			structlog.processors.TimeStamper(fmt="iso"),
+			structlog.processors.StackInfoRenderer(),
+			structlog.processors.format_exc_info,
+			structlog.processors.UnicodeDecoder(),
+			structlog.processors.JSONRenderer()
+		],
+		context_class=dict,
+		logger_factory=structlog.stdlib.LoggerFactory(),
+		wrapper_class=structlog.stdlib.BoundLogger,
+		cache_logger_on_first_use=True,
+	)
+
+	log = log.bind(lambda_name=lambda_name)
+	aws_request_id = ""
+	if lambda_context is not None:
+		aws_request_id = lambda_context.aws_request_id
+		log = log.bind(aws_request_id=aws_request_id)
+	
+	log.critical("started", input_events=json.dumps(lambda_event, indent=3))
+
+	return structlog.get_logger()
 
 	
