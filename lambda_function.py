@@ -36,7 +36,7 @@ def lambda_handler(event, context):
 			for file in file_texts:
 				combined_text = combined_text + "\n____\n" + file + "\n" + file_texts[file] 
 			print("combined_text length: " + str(len(combined_text)))
-			base_filename = "combined-files/" + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M") + "-" + aws_request_id
+			base_filename = "combined-files/" + datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S") + "_" + aws_request_id
 			combined_file_name = base_filename + ".txt"
 			print("combined file name:" + combined_file_name)
 			create_s3_text_file("code-index", combined_file_name, combined_text, s3)
