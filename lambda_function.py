@@ -42,7 +42,6 @@ def lambda_handler(event, context):
 
 
 
-
 			e = Event("", "")
 			for file in dynamodb_urls_to_process:
 				e.purge_event("code-index", file)
@@ -95,4 +94,9 @@ def setup_logging(lambda_name, lambda_event, aws_request_id):
 
 	return log
 
-	
+def create_csv_file_contents(file_texts):
+	csv = "filename,file_text"
+	row_template = "\"{}\",\"{}\""
+	for file in file_texts:
+		csv = csv + "\n" + row_template.format(file, file_texts[file])
+	return csv
