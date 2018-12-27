@@ -22,18 +22,16 @@ def lambda_handler(event, context):
 			log = setup_logging("aws-code-index-stream-bulk-load", event, aws_request_id)
 
 
-
-		#print(json.dumps(event, indent=3))
 		s3 = boto3.resource("s3")
-		s3_urls_to_process = []
+		dynamodb_urls_to_process = []
 		for event in event["Records"]:
 			if event["eventName"] == "INSERT":
 				s3_url = event["dynamodb"]["Keys"]["s3-url"]["S"]
 				print("Found: " + s3_url)
-				s3_urls_to_process.append(s3_url)
+				dynamodb_urls_to_process.append(s3_url)
 
-		if len(s3_urls_to_process) > 0:
-			file_texts = get_file_text_from_s3_urls(s3_urls_to_process, s3)
+		if len(dynamodb_urls_to_process) > 0:
+			file_texts = get_file_text_from_s3_urls(dynamodb_urls_to_process, s3)
 			combined_text = ""
 			for file in file_texts:
 				combined_text = combined_text + "\n____\n" + file + "\n" + file_texts[file] 
@@ -46,10 +44,10 @@ def lambda_handler(event, context):
 
 
 			e = Event("", "")
-			for file in s3_urls_to_process:
+			for file in dynamodb_urls_to_process:
 				e.purge_event("code-index", file)
-			log.critical("process_results", input_file_count=len(s3_urls_to_process), processed_file_count=len(file_texts))
-			result = {"msg" : "Success", "input_file_count" : len(s3_urls_to_process), "processed_file_count" : len(file_texts)}
+			log.critical("process_results", input_file_count=len(dynamodb_urls_to_process), processed_file_count=len(file_texts))
+			result = {"msg" : "Success", "input_file_count" : len(dynamodb_urls_to_process), "processed_file_count" : len(file_texts)}
 			log.critical("finished", result=result)
 		else:
 			print("No INSERT events")
